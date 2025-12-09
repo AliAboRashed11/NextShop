@@ -41,6 +41,7 @@ namespace Ecom.infrastructure.Repositries
 
         public async Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
+            
             var query = _context.Set<T>().AsQueryable();   
            
             foreach (var item in includes)
