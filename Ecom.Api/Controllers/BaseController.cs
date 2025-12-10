@@ -1,4 +1,5 @@
-﻿using Ecom.Core.interfaces;
+﻿using AutoMapper;
+using Ecom.Core.interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,12 @@ namespace Ecom.Api.Controllers
     public class BaseController : ControllerBase
     {
         protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
 
-        public BaseController(IUnitOfWork unitOfWork)
+        public BaseController(IUnitOfWork unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
     }
 }

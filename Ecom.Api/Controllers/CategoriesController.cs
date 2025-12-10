@@ -1,4 +1,6 @@
-﻿using Ecom.Core.DTO;
+﻿using AutoMapper;
+using Ecom.Api.Helper;
+using Ecom.Core.DTO;
 using Ecom.Core.Entites.Product;
 using Ecom.Core.interfaces;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +11,7 @@ namespace Ecom.Api.Controllers
 
     public class CategoriesController : BaseController
     {
-        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 
@@ -21,11 +23,11 @@ namespace Ecom.Api.Controllers
                 var categories = await _unitOfWork.CategoryRepositry.GetAllAsync();
                 if (categories is null)
                 {
-                    return BadRequest();
+                    return BadRequest(new ResponseApi(400));
                 }
                 else
                 {
-                    return Ok(categories);
+                    return Ok(categories );
                 }
 
             }
@@ -45,7 +47,7 @@ namespace Ecom.Api.Controllers
                 var category = await _unitOfWork.CategoryRepositry.GetByIdAsync(id);
                 if (category is null)
                 {
-                    return BadRequest();
+                    return BadRequest(new ResponseApi(400, $"not found category id ={id}"));
                 }
                 else
                 {
@@ -63,13 +65,10 @@ namespace Ecom.Api.Controllers
         {
             try
             {
-                var category = new Category()
-                {
-                    Name = categorydto.Name,
-                    Description = categorydto.Description
-                };
+                var category = _mapper.Map<Category>(categorydto);
+               
                 await _unitOfWork.CategoryRepositry.AddAsync(category);
-                return Ok(new {massage ="Item has been Addedd"});
+                return Ok(new ResponseApi(200,"Item has been Added"));
             }
             catch (Exception ex)
             {
@@ -82,14 +81,9 @@ namespace Ecom.Api.Controllers
         {
             try
             {
-             var category =  new Category()
-                {
-                    Id = updateCategoryDto.Id,
-                    Name = updateCategoryDto.Name,
-                    Description = updateCategoryDto.Description
-                };
+                var category = _mapper.Map<Category>(updateCategoryDto);
                 await _unitOfWork.CategoryRepositry.UpdateAsync(category);
-                return Ok(new { massage = "Item has been Updated" });
+                return Ok(new ResponseApi(200, "Item has been Updated"));
 
             }
             catch (Exception ex)
@@ -104,7 +98,7 @@ namespace Ecom.Api.Controllers
             try
             {
                 await _unitOfWork.CategoryRepositry.DeleteAsync(id);
-                return Ok(new { massage = "Item has been Deleted" });
+                return Ok(new ResponseApi(200, "Item has been Deleted"));
             }
             catch (Exception ex)
             {
