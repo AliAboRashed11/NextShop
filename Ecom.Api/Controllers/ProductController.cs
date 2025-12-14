@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ecom.Api.Helper;
+using Ecom.Core.DTO;
 using Ecom.Core.interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +20,13 @@ namespace Ecom.Api.Controllers
             try
             {
                 var products = await _unitOfWork.ProductRepositry
-                    .GetAllAsync(x=> x.Category,x => x.Photos);
-                if(products is null)
+                    .GetAllAsync(x => x.Category, x => x.Photos);
+                var result = _mapper.Map<List<ProductDto>>(products);
+                if (result is null)
                 {
                     return BadRequest(new ResponseApi(400));
                 }
-                return Ok(products);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -32,5 +34,28 @@ namespace Ecom.Api.Controllers
             }
 
         }
+
+        [HttpGet("getbyId/{Id}")]
+        public async Task<IActionResult> GetbyId(int Id)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepositry
+                    .GetByIdAsync(Id, x => x.Category, x => x.Photos);
+                var result = _mapper.Map<ProductDto>(product);
+                if (result is null)
+                {
+                    return BadRequest(new ResponseApi(400));
+                }
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        
     }
 }
