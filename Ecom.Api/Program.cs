@@ -1,4 +1,5 @@
 
+using Ecom.Api.Middleware;
 using Ecom.infrastructure;
 
 
@@ -26,8 +27,10 @@ namespace Ecom.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionMiddeleware>();
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

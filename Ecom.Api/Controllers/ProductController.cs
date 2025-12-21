@@ -56,6 +56,51 @@ namespace Ecom.Api.Controllers
             }
         }
 
-        
+        [HttpPost("Add-Product")]
+        public async Task<IActionResult> AddProduct(AddProductDto productdto)
+        {
+            try
+            {
+                await _unitOfWork.ProductRepositry.AddAsyncProduct(productdto);
+                return Ok(new ResponseApi(200, "Product added successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseApi(400, ex.Message));
+
+            }
+        }
+
+
+        [HttpPut("Update-Product")]
+        public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
+        {
+            try
+            {
+                await _unitOfWork.ProductRepositry.UpdateAsyncProduct(updateProductDto);
+                return Ok(new ResponseApi(200, "Product updated successfully"));    
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseApi(400, ex.Message));
+            }
+        }
+
+        [HttpDelete("Delete-Product/{Id}")]
+        public async Task<IActionResult> DeleteProduct(int Id)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepositry.GetByIdAsync(Id,x=>x.Photos,x=>x.Category);
+                await _unitOfWork.ProductRepositry.DeleteAsyncProduct(product);
+                return Ok(new ResponseApi(200, "Product deleted successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseApi(400, ex.Message));
+            }
+        }
+
     }
 }

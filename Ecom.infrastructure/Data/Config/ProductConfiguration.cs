@@ -17,13 +17,13 @@ namespace Ecom.infrastructure.Data.Config
                    .IsRequired();
            builder.Property(p => p.Description)
                    .IsRequired();
-            builder.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            builder.Property(p => p.NewPrice).HasColumnType("decimal(18,2)");
             builder.HasData(
-                new Product { Id = 1, Name = "Smartphone", Description = "Latest model smartphone with advanced features", Price = 699.99m, CategoryId = 1 },
-                new Product { Id = 2, Name = "Laptop", Description = "High-performance laptop for work and gaming", Price = 1299.99m, CategoryId = 1 },
-                new Product { Id = 3, Name = "Novel", Description = "Bestselling fiction novel by a renowned author", Price = 19.99m, CategoryId = 2 },
-                new Product { Id = 4, Name = "T-Shirt", Description = "Comfortable cotton t-shirt in various sizes", Price = 14.99m, CategoryId = 3 },
-                new Product { Id = 5, Name = "Blender", Description = "Powerful kitchen blender for smoothies and more", Price = 89.99m, CategoryId = 4 }
+                new Product { Id = 1, Name = "Smartphone", Description = "Latest model smartphone with advanced features", NewPrice = 699.99m, CategoryId = 1 },
+                new Product { Id = 2, Name = "Laptop", Description = "High-performance laptop for work and gaming", NewPrice = 1299.99m, CategoryId = 1 },
+                new Product { Id = 3, Name = "Novel", Description = "Bestselling fiction novel by a renowned author", NewPrice = 19.99m, CategoryId = 2 },
+                new Product { Id = 4, Name = "T-Shirt", Description = "Comfortable cotton t-shirt in various sizes", NewPrice = 14.99m, CategoryId = 3 },
+                new Product { Id = 5, Name = "Blender", Description = "Powerful kitchen blender for smoothies and more", NewPrice = 89.99m, CategoryId = 4 }
             );
 
 
