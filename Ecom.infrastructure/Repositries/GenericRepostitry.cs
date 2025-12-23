@@ -25,6 +25,8 @@ namespace Ecom.infrastructure.Repositries
             await _context.SaveChangesAsync();
         }
 
+
+
         public async Task DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
@@ -69,11 +71,15 @@ namespace Ecom.infrastructure.Repositries
 
     
 
-        public Task UpdateAsync(T entity)
+        public  Task UpdateAsync(T entity)
         {
             //_context.Entry(entity).State = EntityState.Modified;
             _context.Set<T>().Update(entity);
-            return _context.SaveChangesAsync();
+            return  _context.SaveChangesAsync();
         }
+
+        public async Task<int> CountAsync()=>
+           await _context.Set<T>().CountAsync();
+        
     }
 }

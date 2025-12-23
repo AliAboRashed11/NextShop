@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Ecom.Api.Middleware
 {
@@ -22,10 +23,21 @@ namespace Ecom.Api.Middleware
             _memoryCache = memoryCache;
         }
             
+        
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
+                 ApplySecurity(context);
+
+                if (IsRequsetAllowed(context)== false)
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
+                    context.Response.ContentType = "application/json";
+                    var response = 
+                    new ApiExceptions((int)HttpStatusCode.TooManyRequests, "Too many requests. Please try again later.");
+                    await context.Response.WriteAsJsonAsync(response);
+                }
                 await _next(context);
             }
             catch (Exception ex)
@@ -40,6 +52,8 @@ namespace Ecom.Api.Middleware
             }
         }
 
+
+        // Simple rate limiting: max 8 requests per 30 seconds per IP
         private bool IsRequsetAllowed(HttpContext context)
         {
             var ip = context.Connection.RemoteIpAddress.ToString();
@@ -63,6 +77,19 @@ namespace Ecom.Api.Middleware
                 _memoryCache.Set(cachKey, (timeStamp, count ), _reteLimitWindow);
             }
             return true;
+        }
+
+        private void  ApplySecurity(HttpContext context)
+        {
+            // X-Content-Type-Options: nosniff
+            // Prevents the browser from guessing the file type, stick to the provided MIME type
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            // X-XSS-Options: 1;mode=block
+            // Protects against XSS attacks, if malicious code is detected, it blocks execution
+            context.Response.Headers["X-XSS-Options"] = "1;mode=block";
+            // X-Frame-Options: DENY
+            // Prevents the site from being displayed in an iframe on other websites to avoid Clickjacking
+            context.Response.Headers["X-Frame-Options"] = "DENY";
         }
     }
 }
